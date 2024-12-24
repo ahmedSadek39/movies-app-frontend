@@ -1,0 +1,94 @@
+<app-form-movies
+  #formMovie
+  (searchEmitter)="searchFilms($event)"
+  [keywordRequired]="false"
+></app-form-movies>
+
+<div class="card p-table-container">
+  <p-toolbar styleClass="mb-6">
+    <ng-template #start>
+      <p-button
+        severity="danger"
+        label="{{ 'DELETE' | translate }}"
+        icon="pi pi-trash"
+        outlined
+        (onClick)="deleteSelectedFilms()"
+        [disabled]="!selectedFilms || !selectedFilms.length"
+      />
+    </ng-template>
+    <ng-template #end>
+      @if(!loading && (totalResults || 0) > 10){
+      <div class="pagination-container">
+        <button
+          (click)="onPageChange(currentPage - 1)"
+          [disabled]="currentPage === 1"
+        >
+          {{ "PREVIOUS" | translate }}
+        </button>
+        <span>{{ "PAGE" | translate }} {{ currentPage }}</span>
+        <button
+          (click)="onPageChange(currentPage + 1)"
+          [disabled]="currentPage * 10 >= (totalResults || 0)"
+        >
+          {{ "NEXT" | translate }}
+        </button>
+      </div>
+      }
+    </ng-template>
+  </p-toolbar>
+
+  <p-table
+    #dt
+    [value]="films"
+    [rows]="10"
+    [paginator]="false"
+    [columns]="cols"
+    [loading]="loading"
+    [(selection)]="selectedFilms"
+    [rowHover]="true"
+    [scrollHeight]="'600px'"
+    dataKey="imdbID"
+  >
+    <ng-template #header>
+      <tr>
+        <th style="width: 3rem">
+          <p-tableHeaderCheckbox />
+        </th>
+        <th style="min-width: 4rem" pSortableColumn="imdbID">
+          {{ "CODE" | translate }}<p-sortIcon field="imdbID" />
+        </th>
+        <th pSortableColumn="title" style="min-width: 10rem">
+          {{ "TITLE" | translate }}
+          <p-sortIcon field="title" />
+        </th>
+        <th>{{ "POSTER" | translate }}</th>
+        <th pSortableColumn="year" style="min-width: 3rem">
+          {{ "PREVIOUS" | translate }}
+          <p-sortIcon field="year" />
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-film>
+      <tr>
+        <td style="width: 3rem">
+          <p-tableCheckbox [value]="film" />
+        </td>
+        <td style="min-width: 4rem">{{ film.imdbID }}</td>
+        <td style="min-width: 10rem">{{ film.title }}</td>
+        <td>
+          <img
+            [src]="film.poster"
+            placeholder
+            loading="lazy"
+            [alt]="film.title"
+            style="width: 80px"
+            class="rounded"
+          />
+        </td>
+        <td>{{ film.year }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-confirmDialog [style]="{ width: '450px' }" />

@@ -1,0 +1,7 @@
+<div id="app">
+  <app-header [hideHeader]="hideHeader" [activePage]="activePage" (toggleLangEmit)="toggleLang($event)"></app-header>
+  <main [class.showheader]="!hideHeader">
+    <router-outlet></router-outlet>
+  </main>
+  <app-loader></app-loader>
+</div>

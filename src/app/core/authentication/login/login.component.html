@@ -1,0 +1,14 @@
+<div class="container">
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+    <h2>{{'LOGIN' | translate}}</h2>
+    <div class="input-group">
+      <label for="username">{{'USERNAME' | translate}}</label>
+      <input type="text" id="username" formControlName="username" [placeholder]="('ENTER' | translate) + ' ' + ('USERNAME' | translate)" />
+    </div>
+    <div class="input-group">
+      <label for="password">{{'PASSWORD' | translate}}</label>
+      <input type="password" id="password" formControlName="password" [placeholder]="('ENTER' | translate) + ' ' + ('PASSWORD' | translate)" />
+    </div>
+    <button type="submit">{{'LOGIN' | translate}}</button>
+  </form>
+</div>

@@ -1,0 +1,24 @@
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f9;
+}
+
+
+.p-select, .p-datepicker-input{
+  min-width: min(100%, 250px);
+}
+
+td > p-button{
+  margin-inline-start: 5px;
+  margin-inline-end: 5px;
+}
+
+.p-toolbar{
+  border-radius: 0 !important;
+}

@@ -1,0 +1,18 @@
+@if (!hideHeader) {
+  <header class="app-header" [class.rtl]="isRtl">
+    <nav>
+      @for (link of links; track $index) {
+        @if (link.show) {
+          <a [class.active]="link.path === activePage" [routerLink]="link.path">{{ isRtl ? link.headerAr : link.headerEn}}</a>
+        }
+      }
+    </nav>
+    <div class="user-controls">
+      <span class="username">{{ username }}</span>
+      <button class="logout-btn" (click)="logout()">{{'LOGOUT' | translate}}</button>
+      <button class="lang-toggle-btn" (click)="toggleLang()">
+        {{ isRtl ? 'ENGLISH' : 'العربية' }}
+      </button>
+    </div>
+  </header>  
+}

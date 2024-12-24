@@ -1,0 +1,26 @@
+<div class="search-container">
+  <form [formGroup]="searchForm" (ngSubmit)="searchFilms()">
+    <input
+      pInputText
+      formControlName="keyword"
+      placeholder="{{'TYPE_KEYWORD' | translate}}"
+      type="text"
+    />
+    <p-dropdown
+      formControlName="type"
+      [options]="typeOptions"
+      appendTo="body"
+      placeholder="{{'TYPE_OPTIONS' | translate}}"
+    >
+    </p-dropdown>
+    <p-datepicker
+      appendTo="body"
+      dateFormat="yy"
+      formControlName="year"
+      placeholder="{{'SELECT_YEAR' | translate}}"
+      view="year"
+      dateFormat="yy"
+    />
+    <button type="submit">{{ 'SEARCH' | translate }}</button>
+  </form>
+</div>  

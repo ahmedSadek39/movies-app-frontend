@@ -1,0 +1,19 @@
+#app{
+    width: 100%; 
+    min-height: 100vh; 
+    display: flex; 
+    flex-direction: column; 
+}
+
+main{
+    flex: 1;
+    overflow-y: auto;
+    position: absolute;
+    left: 0;
+    right: 0;
+
+    &.showheader{
+        margin-top: 50px;
+        top: 10px;
+    }
+}

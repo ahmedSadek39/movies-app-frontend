@@ -1,0 +1,28 @@
+<div class="container">
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="login-form">
+      <h2>{{'REGISTER' | translate}}</h2>
+      <div class="input-group">
+        <label for="username">{{'USERNAME' | translate}}</label>
+        <input type="text" id="username" formControlName="username" [placeholder]="('ENTER' | translate) + ' ' + ('USERNAME' | translate)" />
+      </div>
+      <div class="input-group">
+        <label for="password">{{'PASSWORD' | translate}}</label>
+        <input type="password" id="password" formControlName="password" [placeholder]="('ENTER' | translate) + ' ' + ('PASSWORD' | translate)" />
+      </div>
+      <div class="input-group">
+        <label for="confirmPassword">{{'CONFIRM_PASSWORD' | translate}}</label>
+        <input type="password" id="confirmPassword" formControlName="confirmPassword" [placeholder]="('ENTER' | translate) + ' ' + ('CONFIRM_PASSWORD' | translate)" />
+      </div>
+      <div class="input-group">
+        <label for="role">{{'ROLE' | translate}}</label>
+        <p-dropdown
+        formControlName="role"
+        [options]="roles"
+        appendTo="body"
+        placeholder="{{'ROLES' | translate}}"
+      >
+      </p-dropdown>
+      </div>
+      <button type="submit">{{'REGISTER' | translate}}</button>
+    </form>
+  </div>

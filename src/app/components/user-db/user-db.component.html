@@ -1,0 +1,238 @@
+<app-form-movies
+  #formMovie
+  (searchEmitter)="searchFilms($event)"
+></app-form-movies>
+<div class="card p-table-container">
+  <p-toolbar styleClass="mb-6">
+    <ng-template #end>
+      @if(!loading && (totalResults || 0) > 0){
+      <div class="pagination-container">
+        <button
+          (click)="onPageChange(currentPage - 1)"
+          [disabled]="currentPage === 1"
+        >
+          {{ "PREVIOUS" | translate }}
+        </button>
+        <span>{{ "PAGE" | translate }} {{ currentPage }}</span>
+        <button
+          (click)="onPageChange(currentPage + 1)"
+          [disabled]="currentPage * 10 >= (totalResults || 0)"
+        >
+          {{ "NEXT" | translate }}
+        </button>
+      </div>
+      }
+    </ng-template>
+  </p-toolbar>
+  <p-table
+    #dt
+    [value]="films"
+    [rows]="10"
+    [paginator]="false"
+    [columns]="cols"
+    [loading]="loading"
+    [rowHover]="true"
+    [scrollHeight]="'600px'"
+    dataKey="imdbID"
+  >
+    <ng-template #header>
+      <tr>
+        <th style="min-width: 4rem" pSortableColumn="imdbID">
+          {{ "CODE" | translate }}<p-sortIcon field="imdbID" />
+        </th>
+        <th pSortableColumn="title" style="min-width: 10rem">
+          {{ "TITLE" | translate }}
+          <p-sortIcon field="title" />
+        </th>
+        <th pSortableColumn="type" style="min-width: 3rem">
+          {{ "TYPE" | translate }}
+          <p-sortIcon field="type" />
+        </th>
+        <th>{{ "POSTER" | translate }}</th>
+        <th pSortableColumn="year" style="min-width: 3rem">
+          {{ "YEAR" | translate }}
+          <p-sortIcon field="year" />
+        </th>
+        @if (showReviews) {
+        <th pSortableColumn="avgRating" style="min-width: 12rem">
+          {{ "AVG_RATING" | translate }}
+          <p-sortIcon field="avgRating" />
+        </th>
+        } @if (showReviews || showDetails) {
+        <th style="min-width: 2rem">
+          <!-- {{ "SETTING" | translate }} -->
+        </th>
+        }
+      </tr>
+    </ng-template>
+    <ng-template #body let-film>
+      <tr>
+        <td style="min-width: 4rem">{{ film.imdbID }}</td>
+        <td style="min-width: 10rem">{{ film.title }}</td>
+        <td>{{ film.type }}</td>
+        <td>
+          <img
+            [src]="film.poster"
+            loading="lazy"
+            [alt]="film.title"
+            style="width: 80px"
+            class="rounded"
+          />
+        </td>
+        <td>{{ film.year }}</td>
+        @if (showReviews) {
+        <td>
+          <p-rating
+            [(ngModel)]="film.avgRating"
+            [readonly]="true"
+            [stars]="5"
+          />
+        </td>
+        } @if (showReviews || showDetails) {
+        <td class="td-flex">
+          @if (showReviews) {
+          <p-button
+            pTooltip="{{ 'AddReview' | translate }}"
+            icon="pi pi-star"
+            class="mr-2"
+            [rounded]="true"
+            [outlined]="true"
+            (click)="openRatingModal(film)"
+          >
+          </p-button>
+          } @if (showDetails) {
+          <p-button
+            pTooltip="{{ 'ShowDetails' | translate }}"
+            icon="pi pi-info-circle"
+            class="mr-2"
+            [rounded]="true"
+            [outlined]="true"
+            (click)="openDetailsModal(film)"
+          >
+          </p-button>
+          }
+        </td>
+        }
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog
+  [(visible)]="ratingDialog"
+  [style]="{ width: '400px' }"
+  class="dialog"
+  (onHide)="hideRatingDialog()"
+>
+  <div class="dialog-header">{{ "RATE_FILM" | translate }}</div>
+  @if (film) {
+  <div class="dialog-content">
+    <h3>{{ film.title }}</h3>
+    <div class="rating">
+      <p-rating
+        [(ngModel)]="film.userRating"
+        class="stars"
+        [stars]="5"
+      ></p-rating>
+    </div>
+    <p>
+      {{
+        film.userRating
+          ? ("YOU_RATE_THIS_FILM" | translate) +
+            film.userRating +
+            " " +
+            ("STARTS" | translate)
+          : ("SELECT_YOUR_RATING" | translate)
+      }}
+    </p>
+  </div>
+  <div class="dialog-footer">
+    <button class="button cancel" (click)="hideRatingDialog()">
+      {{ "CANCEL" | translate }}
+    </button>
+    <button class="button save" (click)="saveRating()">
+      {{ "RATE_IT" | translate }}
+    </button>
+  </div>
+  }
+</p-dialog>
+
+<p-dialog
+  [(visible)]="detailsDialog"
+  [style]="{ width: '700px' }"
+  class="details-dialog"
+  (onHide)="hideDetailsDialog()"
+>
+  @if (filmDetails) {
+  <div class="dialog-header">{{ filmDetails.title }}</div>
+  <div class="dialog-content">
+    <div class="details-container">
+      <div class="image-section">
+        <img  loading="lazy" [src]="filmDetails.poster" [alt]="filmDetails.title" />
+      </div>
+      <div class="info-section">
+        <p>
+          <strong>{{ "YEAR" | translate }}:</strong> {{ filmDetails.year }}
+        </p>
+        <p>
+          <strong>{{ "RATED" | translate }}:</strong> {{ filmDetails.rated }}
+        </p>
+        <p>
+          <strong>{{ "RELEASED" | translate }}:</strong>
+          {{ filmDetails.released }}
+        </p>
+        <p>
+          <strong>{{ "RUNTIME" | translate }}:</strong>
+          {{ filmDetails.runtime }}
+        </p>
+        <p>
+          <strong>{{ "GENRE" | translate }}:</strong> {{ filmDetails.genre }}
+        </p>
+        <p>
+          <strong>{{ "DIRECTOR" | translate }}:</strong>
+          {{ filmDetails.director }}
+        </p>
+        <p>
+          <strong>{{ "WRITER" | translate }}:</strong> {{ filmDetails.writer }}
+        </p>
+        <p>
+          <strong>{{ "ACTORS" | translate }}:</strong> {{ filmDetails.actors }}
+        </p>
+        <p>
+          <strong>{{ "PLOT" | translate }}:</strong> {{ filmDetails.plot }}
+        </p>
+        <p>
+          <strong>{{ "LANGUAGE" | translate }}:</strong>
+          {{ filmDetails.language }}
+        </p>
+        <p>
+          <strong>{{ "COUNTRY" | translate }}:</strong>
+          {{ filmDetails.country }}
+        </p>
+        <p>
+          <strong>{{ "AWARDS" | translate }}:</strong> {{ filmDetails.awards }}
+        </p>
+        <p>
+          <strong>{{ "AVG_RATING" | translate }}:</strong>
+          {{ filmDetails.avgRating }}
+        </p>
+        <p>
+          <strong>{{ "IMDB_RATING" | translate }}:</strong>
+          {{ filmDetails.imdbRating }}
+        </p>
+        <p>
+          <strong>{{ "BOX_OFFICE" | translate }}:</strong>
+          {{ filmDetails.boxOffice }}
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="dialog-footer">
+    <button class="button cancel" (click)="hideDetailsDialog()">
+      {{ "CLOSE" | translate }}
+    </button>
+  </div>
+  }
+</p-dialog>
+
+<p-confirmDialog [style]="{ width: '450px' }" />
